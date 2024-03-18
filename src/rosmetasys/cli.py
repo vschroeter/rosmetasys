@@ -1,12 +1,15 @@
-# from __future__ import annotations
-from datetime import datetime
+from __future__ import annotations
 import click
 from click import Context
 from click_aliases import ClickAliasedGroup
-import builtins
 
 import logging
 from rich.logging import RichHandler
+
+from InquirerPy import inquirer
+
+from rosmetasys.console import console
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,26 +27,31 @@ def cli(ctx: Context, **kwargs):
 
 
 @cli.command(aliases=['i'])
-@click.argument("output_file", nargs=1, required=False, default=f"rosmetasys_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json")
+@click.argument("system_name", nargs=1, required=False, default=f"rosmetasys")
 @click.option("-v", "--verbose", is_flag=True, default=False, help='Print more output.')
-# @click.option("-p", "--publish", is_flag=True, default=False, help='Publish the .')
-
+@click.option("-i", "--interactive", is_flag=True, default=False, help='Interactive version asking you the options.')
+@click.option("-a", "--anonymize", is_flag=True, default=False, help='Anonymizing of node names and topics.')
+@click.option("-z", "--zip", is_flag=True, default=False, help='Create the zip file.')
+@click.option("-p", "--pretty", is_flag=True, default=False, help='Pretty formatting for the json.')
 @click.pass_context
 def export(ctx: Context, **kwargs):
     """
-    Exports the system meta information to an [OUTPUT_FILE].
+    Export the system meta information, named [SYSTEM_NAME].
     
     """
     from rosmetasys.export import export
 
+    if kwargs["interactive"]:
+        kwargs["system_name"] = inquirer.text(message="System name:", default=kwargs["system_name"]).execute()
+        kwargs["anonymize"] = inquirer.confirm(message="Anonymizing of node names and topics:", default=kwargs["anonymous"]).execute()
+        kwargs["zip"] = inquirer.confirm(message="Create the zip file:", default=True).execute()
+
+
+    if kwargs["verbose"]:
+        logging.getLogger().setLevel(logging.DEBUG)
+
     try:
         export(**kwargs)
-    except Exception as e:
-        from pakk.logger import Logger
-        Logger.get_console().print_exception()
     except KeyboardInterrupt:
-        from pakk.logger import Logger
-        Logger.get_console().print("Keyboard interrupt at CLI...")
-    #     pass
-    # finally:
-    #     ctx.exit(0)
+        console.print("Aborting.")
+
