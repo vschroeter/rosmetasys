@@ -26,7 +26,7 @@ def cli(ctx: Context, **kwargs):
     pass
 
 
-@cli.command(aliases=['i'])
+@cli.command(aliases=['e'])
 @click.argument("system_name", nargs=1, required=False, default=f"rosmetasys")
 @click.option("-v", "--verbose", is_flag=True, default=False, help='Print more output.')
 @click.option("-i", "--interactive", is_flag=True, default=False, help='Interactive version asking you the options.')

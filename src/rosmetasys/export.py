@@ -17,7 +17,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
-
+VERSION = "1.0.0"
 TEMP_NODE_NAME = "_rosmetasys_temp_node"
 
 class Topic:
@@ -99,9 +99,7 @@ class RosSystem:
         # Wait until the node is registered
         rclpy.spin_once(temp_node, timeout_sec=1.0)
         nodes_and_ns = temp_node.get_node_names_and_namespaces()
-
-
-        # print(nodes_and_ns)
+        nodes_and_ns = list(set(nodes_and_ns))
 
         for node_name, node_ns in nodes_and_ns:
             if node_name == TEMP_NODE_NAME:
@@ -120,7 +118,8 @@ class RosSystemEncoder(json.JSONEncoder):
         
         if isinstance(o, RosSystem):            
             return {
-                "version": "1.0.0",
+                "version": VERSION,
+                "created_at": datetime.now().isoformat(),
                 "nodes": o.nodes
             }
         
@@ -153,7 +152,11 @@ class AnonymousRosSystemEncoder(json.JSONEncoder):
     def default(self, o: any):
         
         if isinstance(o, RosSystem):            
-            return o.nodes
+            return {
+                "version": VERSION,
+                "created_at": datetime.now().isoformat(),
+                "nodes": o.nodes
+            }
         
         if isinstance(o, Node):
             return {

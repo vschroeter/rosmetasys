@@ -26,13 +26,17 @@ Options:
 
 ## Upload your dataset
 
-The datasets are gathered in the [rosmetasys-datasets](https://github.com/vschroeter/rosmetasys-datasets) repository. Feel free to [create a new issue](https://github.com/vschroeter/rosmetasys-datasets/issues/new?assignees=vschroeter&labels=dataset&projects=&template=providing-a-new-dataset-.md&title=%5BDATASET%5D+New+dataset) with your dataset attached or create a pull request.
+The datasets are gathered in the [rosmetasys-datasets](https://github.com/vschroeter/rosmetasys-datasets) repository. 
+Feel free to [create a new issue](https://github.com/vschroeter/rosmetasys-datasets/issues/new?assignees=vschroeter&labels=dataset&projects=&template=providing-a-new-dataset-.md&title=%5BDATASET%5D+New+dataset) with your dataset attached or create a pull request.
+
+If you want to anonymously submit your dataset without creating a pull request and have it uploaded to the repository, you can zip your dataset and send it to me via email (valentin.schroeter@hpi.uni-potsdam.de). 
 
 # Example output
 
 ```json
 {
     "version": "1.0.0",
+    "created_at": "2024-01-01T10:40:40.000000",
     "nodes": [
         {
             "name": "first_node",
@@ -80,8 +84,11 @@ The datasets are gathered in the [rosmetasys-datasets](https://github.com/vschro
 
 ```
 
+If you use the `--anonymize` option, the node names and topic names are irreversibly anonymized by replacing the node and topic names with consecutive IDs.
+
 # Known issues
 
 ROS nodes need a little time to start up. Sometimes, the introspection methods does not return all nodes of the system.
 At the moment, the exporter waits for 5 seconds before starting the introspection.
 But it's not guaranteed that this is enough time for all nodes to start up.
+If your output seems incomplete, just try to export another time.
