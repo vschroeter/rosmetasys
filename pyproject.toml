@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rosmetasys"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Valentin Schröter", email="valentin.schroeter@student.hpi.uni-potsdam.de" },
 ]

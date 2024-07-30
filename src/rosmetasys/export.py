@@ -135,7 +135,9 @@ class RosSystemEncoder(json.JSONEncoder):
                 "name": o.name,
                 "description": "",
                 "created_at": datetime.now().isoformat(),
-                "nodeCount": len(o.nodes),
+                "node_count": len(o.nodes),
+                "author": "",
+                "cc_by_sa_consent": False,
                 "nodes": o.nodes,
             }
 
