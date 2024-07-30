@@ -7,6 +7,12 @@ This includes:
 - services and clients of each node
 - message types of each topic
 
+# Installation
+
+```bash
+pip install rosmetasys
+```
+
 # Basic usage
 
 ## Export your dataset
