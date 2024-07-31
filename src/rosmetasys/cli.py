@@ -33,6 +33,9 @@ def cli(ctx: Context, **kwargs):
 @click.option("-a", "--anonymize", is_flag=True, default=False, help='Anonymizing of node names and topics.')
 @click.option("-z", "--zip", is_flag=True, default=False, help='Create the zip file.')
 @click.option("-p", "--pretty", is_flag=True, default=False, help='Pretty formatting for the json.')
+@click.option("--author", help='Author of the dataset.', default="")
+@click.option("--description", help='Description of the dataset.', default="")
+@click.option("--no-consent", is_flag=True, default=False, help='No consent to the use of the data set under the CC BY-SA license.')
 @click.pass_context
 def export(ctx: Context, **kwargs):
     """
@@ -43,7 +46,10 @@ def export(ctx: Context, **kwargs):
 
     if kwargs["interactive"]:
         kwargs["system_name"] = inquirer.text(message="System name:", default=kwargs["system_name"]).execute()
-        kwargs["anonymize"] = inquirer.confirm(message="Anonymizing of node names and topics:", default=kwargs["anonymous"]).execute()
+        kwargs["anonymize"] = inquirer.confirm(message="Anonymizing of node names and topics:", default=kwargs["anonymize"]).execute()
+        kwargs["author"] = inquirer.text(message="Author of the dataset:", default=kwargs["author"]).execute()
+        kwargs["description"] = inquirer.text(message="Description of the dataset:", default=kwargs["description"]).execute()
+        kwargs["no_consent"] = not inquirer.confirm(message="Consent to the use of the data set under the CC BY-SA license:", default=not kwargs["no_consent"]).execute()
         kwargs["zip"] = inquirer.confirm(message="Create the zip file:", default=True).execute()
 
 

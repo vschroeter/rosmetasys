@@ -98,9 +98,13 @@ class Node:
 
 
 class RosSystem:
-    def __init__(self, nodes: list[Node] = None):
+    def __init__(self, nodes: list[Node] = None, kwargs: dict[str, str] = {}):
         self.nodes: list[Node] = nodes or []
-        self.name = "rosmetasys"
+        self.name = kwargs.get("name", "rosmetasys")
+        self.description = kwargs.get("description", "")
+        self.author = kwargs.get("author", "")
+        self.cc_by_sa_consent = not kwargs.get("no_consent", False)
+        self.created_at = datetime.now()
 
     @property
     def sorted_nodes(self):
@@ -133,11 +137,11 @@ class RosSystemEncoder(json.JSONEncoder):
             return {
                 "version": VERSION,
                 "name": o.name,
-                "description": "",
-                "created_at": datetime.now().isoformat(),
+                "description": o.description,
+                "created_at": o.created_at.isoformat(),
                 "node_count": len(o.nodes),
-                "author": "",
-                "cc_by_sa_consent": False,
+                "author": o.author,
+                "cc_by_sa_consent": o.cc_by_sa_consent,
                 "nodes": o.nodes,
             }
 
@@ -211,7 +215,8 @@ def export(system_name: str, **kwargs: dict[str, str]):
     console.rule("ROS2 Meta System Exporter")
     logger.debug("Starting ROS2 Meta System Exporter.")
 
-    total_system = RosSystem()
+    total_system = RosSystem(kwargs = kwargs)
+    
 
     for localhost_value in ["0", "1"]:
         os.environ["ROS_LOCALHOST_ONLY"] = localhost_value
@@ -234,9 +239,13 @@ def export(system_name: str, **kwargs: dict[str, str]):
 
     encoder_cls = AnonymousRosSystemEncoder if kwargs["anonymize"] else RosSystemEncoder
 
-    datestring = datetime.now().strftime("%Y-%m-%d_%H-%M")
+    datestring = total_system.created_at.strftime("%Y-%m-%d_%H-%M-%S")
     count_nodes = len(total_system.nodes)
-    export_name = system_name + "_" + datestring + f"_{count_nodes}nodes"
+
+    # Format count_nodes to  have 4 digits
+    count_nodes = f"{count_nodes:04d}"
+
+    export_name = count_nodes + "nodes_" + datestring + f"_{system_name}"
 
     total_system.name = export_name
     indent = 4 if kwargs["pretty"] else None
