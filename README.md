@@ -37,6 +37,13 @@ Feel free to [create a new issue](https://github.com/vschroeter/rosmetasys-datas
 
 If you want to anonymously submit your dataset without creating a pull request and have it uploaded to the repository, you can zip your dataset and send it to me via email (valentin.schroeter@hpi.uni-potsdam.de). 
 
+## Visualize your Dataset
+
+You can test the visualization of your data on https://vschroeter.github.io/RosComGraph/#/.
+Open the website and upload the data set at the `Upload JSON file` input field in the left drawer.
+
+<img width="881" alt="image" src="https://github.com/user-attachments/assets/e6a3b8ba-3035-49d2-b3c9-00651f907a43">
+
 # Example output
 
 ```json
