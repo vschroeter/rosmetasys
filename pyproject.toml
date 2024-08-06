@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rosmetasys"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="Valentin Schröter", email="valentin.schroeter@student.hpi.uni-potsdam.de" },
 ]
@@ -16,6 +16,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+  'click-aliases',
+  'click',
+  'InquirerPy',
+  'rich',
 ]
 
 [project.urls]
