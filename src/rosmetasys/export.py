@@ -17,7 +17,7 @@ import json
 logger = logging.getLogger(__name__)
 
 VERSION = "1.0.0"
-TEMP_NODE_NAME = "_rosmetasys_temp_node"
+TEMP_NODE_NAME = "_rosmetasys_temp_node" + datetime.now().strftime("%Y%m%d%H%M%S")
 
 
 class Topic:
@@ -45,6 +45,10 @@ class Node:
 
         # TODO?
         # self.actions: list[Topic] = []
+
+    @property
+    def name_with_namespace(self):
+        return self.namespace + "/" + self.name if self.namespace != "/" else self.name
 
     def __str__(self):
         s = f"{self.name} ({self.namespace}):\n"
@@ -218,7 +222,7 @@ def export(system_name: str, **kwargs: dict[str, str]):
     total_system = RosSystem(kwargs = kwargs)
     
 
-    for localhost_value in ["0", "1"]:
+    for localhost_value in ["1", "0"]:
         os.environ["ROS_LOCALHOST_ONLY"] = localhost_value
 
         logger.debug("Initialized rclpy.")
@@ -228,12 +232,20 @@ def export(system_name: str, **kwargs: dict[str, str]):
         system = RosSystem()
         system.discover()
 
-        msg = f"Found {len(system.nodes)} nodes in the system (localhost_only={localhost_value == '1'}):\n"
+
+        # Add nodes, if they are not already in the total_system
+        existing_nodes = set([node.name_with_namespace for node in total_system.nodes])
+        new_nodes: list[Node] = []
         for node in system.sorted_nodes:
+            if node.name_with_namespace not in existing_nodes:
+                new_nodes.append(node)
+                total_system.nodes.append(node)
+
+        # msg = f"Found {len(system.nodes)} nodes in the system (localhost_only={localhost_value == '1'}):\n"
+        msg = f"Found {len(new_nodes)} new nodes in the system (localhost_only={localhost_value == '1'}):\n"
+        for node in new_nodes:
             msg += f"\t{node.namespace + '/' if node.namespace != '/' else ''}{node.name} ({len(node.all_topics)} Topics)\n"
         logger.info(msg)
-
-        total_system.nodes += system.nodes
 
         rclpy.shutdown()
 
